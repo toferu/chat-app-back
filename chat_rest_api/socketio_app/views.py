@@ -18,7 +18,7 @@ sio = socketio.Server(logger= True, cors_allowed_origins="*")
 
 thread = None
 
-sio.on('my_response', lambda a, b : print(a.data + 'dafdsf' ))
+sio.on('my_event', lambda a, b : print(b))
 
 def index(request):
     
