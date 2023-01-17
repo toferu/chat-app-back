@@ -18,11 +18,14 @@ sio = socketio.Server(logger= True, cors_allowed_origins="*")
 
 thread = None
 
-sio.on('my_event', lambda a, b : print(b))
+sio.on('send_message', lambda a, b :
+    sio.emit('my_response', {'data': b}))
+
+
 
 def index(request):
     
-    return print('my_response')
+    return print('send_message')
 
 
 # def index(request):
@@ -32,14 +35,14 @@ def index(request):
 #     return HttpResponse(open(os.path.join(basedir, 'static/index.html')))
 
 
-# def background_thread():
-#     """Example of how to send server generated events to clients."""
-#     count = 0
-#     while True:
-#         sio.sleep(10)
-#         count += 1
-#         sio.emit('my_response', {'data': 'Server generated event'},
-#                  namespace='/test')
+def background_thread():
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        sio.sleep(10)
+        count += 1
+        sio.emit('my_event', {'data': 'Server generated event'},
+                 namespace='/test')
 
 
 # @sio.event
@@ -84,9 +87,9 @@ def index(request):
 #     sio.disconnect(sid)
 
 
-# @sio.event
-# def connect(sid, environ):
-#     sio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
+@sio.event
+def connect(sid, environ):
+    sio.emit('my_response', {'data': 'Connected', 'count': 0}, room=sid)
 
 
 # @sio.event
