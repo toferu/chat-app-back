@@ -8,29 +8,32 @@
 </head>
 <body>
     <h1>Chat Room</h1>
+    <div>
+        <textarea id="chat-text" cols="80" rows="30"></textarea><br>
+        <input id="input" type="text" size="80"></br>
+        <input id="submit" type="button" value="Send">
+    </div>
+    {{ user }}
 
-    <textarea id="chat-text" cols="80" rows="30"></textarea><br>
-    <input id="input" type="text" size="80"></br>
-    <input id="submit" type="button" value="Send">
-
-
-    <div id="user-hello"></div>
 
     {{ room_name|json_script:"room-name" }}
+    {{ request.user.username|json_script:"user_username" }}
 
     <script>
+
+    const user_username = JSON.parse(document.getElementById('user_username').textContent)
+    const roomName = JSON.parse(document.getElementById('room-name').textContent)
 
         document.querySelector('#submit').onclick = function  (e) {
             const msgInput = document.querySelector('#input')
             const message = msgInput.value
             chatSocket.send(JSON.stringify({
+                'username': user_username,
                 'message': message,
             }))
             msgInput.value = ''
         }
 
-
-        const roomName = JSON.parse(document.getElementById('room-name').textContent)
         const chatSocket = new WebSocket(
             'ws://' +
             window.location.host +
@@ -42,8 +45,7 @@
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data)
             console.log(data)
-            document.querySelector('#user-hello').innerHTML=(data.tester)
-            document.querySelector('#chat-text').value += (data.message + '\n')
+            document.querySelector('#chat-text').value += (data.username + ':' + data.message + '\n')
         }
 
     </script>
