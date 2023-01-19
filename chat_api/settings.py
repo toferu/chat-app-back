@@ -94,7 +94,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': 'localhost'
     },
-        'channels_postgres': {
+    'channels_postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': '',
