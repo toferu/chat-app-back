@@ -192,12 +192,12 @@ CHANNEL_LAYERS = {
 #         },
 #     },
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": [os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379')],
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        }
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": [os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379')],
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         }
+#     }
+# }
