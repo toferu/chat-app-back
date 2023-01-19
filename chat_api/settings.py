@@ -193,7 +193,7 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 #   }  
 # }
 
-from monkeypatch import CustomSSLConnection
+from chat_api.monkeypatch import CustomSSLConnection
 context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH, cafile='some.crt')
 context.load_cert_chain(certfile='some.crt', keyfile='some.key')
 channel_settings = {
