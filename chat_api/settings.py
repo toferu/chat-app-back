@@ -16,8 +16,8 @@ import dj_database_url
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 ROOT_URLCONF = 'chat_api.urls'
 
 TEMPLATES = [
@@ -86,12 +88,20 @@ WSGI_APPLICATION = 'chat_api.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost'
+    },
+        'channels_postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': '',
         'PASSWORD': '',
         'HOST': 'localhost'
     }
+
 }
 
 db_from_env = dj_database_url.config(conn_max_age=800, conn_health_checks = True)
