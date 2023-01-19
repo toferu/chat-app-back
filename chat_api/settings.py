@@ -161,21 +161,41 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 # }
 
 #Redis
+# ssl_context = ssl.SSLContext()
+# ssl_context.check_hostname = False
+
+# heroku_redis_ssl_host = {
+#     'address': [os.environ.get('REDIS_TLS_URL', 'rediss://localhost:6379')],
+#     'ssl': ssl_context
+# }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         'BACKEND': "channels_redis.core.RedisChannelLayer",
+#         'CONFIG': {
+#             "hosts":(heroku_redis_ssl_host) ,
+#         },
+#     },
+# }
+
 ssl_context = ssl.SSLContext()
 ssl_context.check_hostname = False
 
-heroku_redis_ssl_host = {
-    'address': [os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379')],
-    'ssl': ssl_context
-}
+# heroku_redis_ssl_host = {
+#     'address': [os.environ.get('REDIS_TLS_URL', 'rediss://localhost:6379')],
+#     'ssl': ssl_context
+# }
 
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': "channels_redis.core.RedisChannelLayer",
         'CONFIG': {
-            "hosts":(heroku_redis_ssl_host) ,
-        },
-    },
+            "hosts":({
+                'address': os.environ.get('REDIS_TLS_URL'),
+                'ssl': ssl_context
+        },)
+    }
+  }  
 }
 #channels_postgres
 # CHANNEL_LAYERS = {
