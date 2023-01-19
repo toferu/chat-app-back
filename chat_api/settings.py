@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import ssl
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -160,11 +161,19 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 # }
 
 #Redis
+ssl_context = ssl.SSLContext()
+ssl_context.check_hostname = False
+
+heroku_redis_ssl_host = {
+    'address': [os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379')],
+    'ssl': ssl_context
+}
+
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': "channels_redis.core.RedisChannelLayer",
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379')],
+            "hosts":(heroku_redis_ssl_host) ,
         },
     },
 }
