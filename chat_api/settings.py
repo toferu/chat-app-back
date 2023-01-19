@@ -178,25 +178,42 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 #     },
 # }
 
-ssl_context = ssl.SSLContext()
-ssl_context.check_hostname = False
+# ssl_context = ssl.SSLContext()
+# ssl_context.check_hostname = False
 
-# heroku_redis_ssl_host = {
-#     'address': [os.environ.get('REDIS_TLS_URL', 'rediss://localhost:6379')],
-#     'ssl': ssl_context
+# CHANNEL_LAYERS = {
+#     "default": {
+#         'BACKEND': "channels_redis.core.RedisChannelLayer",
+#         'CONFIG': {
+#             "hosts":({
+#                 'address': os.environ.get('REDIS_TLS_URL'),
+#                 'ssl': ssl_context
+#         },)
+#     }
+#   }  
 # }
 
-CHANNEL_LAYERS = {
-    "default": {
-        'BACKEND': "channels_redis.core.RedisChannelLayer",
-        'CONFIG': {
-            "hosts":({
-                'address': os.environ.get('REDIS_TLS_URL'),
-                'ssl': ssl_context
-        },)
+from monkeypatch import CustomSSLConnection
+context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH, cafile='some.crt')
+context.load_cert_chain(certfile='some.crt', keyfile='some.key')
+channel_settings = {
+    'CHANNEL_LAYERS': {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": [
+                    {
+                        'host': f"{os.environ['REDIS']}",
+                        'port': 6379,
+                        'connection_class': CustomSSLConnection,
+                        'ssl_context': context,
+                    }
+                ],
+            },
+        },
     }
-  }  
 }
+
 #channels_postgres
 # CHANNEL_LAYERS = {
 #     'default': {
