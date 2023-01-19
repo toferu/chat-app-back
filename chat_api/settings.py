@@ -203,7 +203,7 @@ channel_settings = {
             'CONFIG': {
                 "hosts": [
                     {
-                        'host': f"{os.environ['REDIS']}",
+                        'host': f"{os.environ['REDIS_TLS_URL']}",
                         'port': 6379,
                         'connection_class': CustomSSLConnection,
                         'ssl_context': context,
