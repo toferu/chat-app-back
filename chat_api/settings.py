@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ['localhost', '.herokuapp.com']
 INSTALLED_APPS = [
     'chat',
     'channels',
-    'channels_postgres',
+    # 'channels_postgres',
     'daphne',
     'corsheaders',
     'rest_framework',
