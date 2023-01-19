@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ['localhost', '.herokuapp.com']
 INSTALLED_APPS = [
     'chat',
     'channels',
-    # 'channels_postgres',
+    'channels_postgres',
     'daphne',
     'corsheaders',
     'rest_framework',
@@ -105,7 +105,7 @@ DATABASES = {
 }
 
 db_from_env = dj_database_url.config(conn_max_age=800, conn_health_checks = True)
-DATABASES['default'].update(db_from_env)
+DATABASES['channels_postgres'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -159,27 +159,36 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 #     }
 # }
 
-#Redis?
-# CHANNEL_LAYERS = {
-#     "default": {
-#         'BACKEND': "channels_redis.chat_api.RedisChannelLayer",
-#         'CONFIG': {
-#             "hosts": [('127.0.0.1', 6379)],
-#         },
-#     },
-# }
-
+#Redis
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
+    "default": {
+        'BACKEND': "channels_redis.chat_api.RedisChannelLayer",
         'CONFIG': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'postgres',
-            'USER': 'postgres',
-            'PASSWORD': 'password',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-            }
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
     },
+}
+#channels_postgres
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_postgres.core.PostgresChannelLayer',
+#         'CONFIG': {
+#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#             'NAME': 'postgres',
+#             'USER': 'postgres',
+#             'PASSWORD': 'password',
+#             'HOST': '127.0.0.1',
+#             'PORT': '5432',
+#             }
+#         },
+#     },
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        }
+    }
+}
