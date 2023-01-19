@@ -194,8 +194,11 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 # }
 
 from chat_api.monkeypatch import CustomSSLConnection
-context = ssl.create_default_context(purpose=ssl.Purpose.CLIENT_AUTH, cafile='some.crt')
-context.load_cert_chain(certfile='some.crt', keyfile='some.key')
+from urllib.parse import urlparse
+
+url = urlparse(os.environ.get('REDIS_TLS_URL'))
+context = ssl.SSLContext()
+context.check_hostname = False
 channel_settings = {
     'CHANNEL_LAYERS': {
         'default': {
@@ -203,8 +206,8 @@ channel_settings = {
             'CONFIG': {
                 "hosts": [
                     {
-                        'host': f"{os.environ['REDIS_TLS_URL']}",
-                        'port': 6379,
+                        'host': url.hostname,
+                        'port': url.port,
                         'connection_class': CustomSSLConnection,
                         'ssl_context': context,
                     }
