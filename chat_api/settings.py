@@ -80,7 +80,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'chat_api.wsgi.application'
+# WSGI_APPLICATION = 'chat_api.wsgi.application'
 
 
 # Database
