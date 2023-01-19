@@ -162,7 +162,7 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 #Redis
 CHANNEL_LAYERS = {
     "default": {
-        'BACKEND': "channels_redis.chat_api.RedisChannelLayer",
+        'BACKEND': "channels_redis.core.RedisChannelLayer",
         'CONFIG': {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
         },
