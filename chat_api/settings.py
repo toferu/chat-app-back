@@ -80,7 +80,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'chat_api.wsgi.application'
+# WSGI_APPLICATION = 'chat_api.wsgi.application'
 
 
 # Database
@@ -160,11 +160,24 @@ ASGI_APPLICATION = 'chat_api.asgi.application'
 # }
 
 #Redis
+CHANNEL_LAYER_SSL=True
+CHANNEL_LAYER_PROTO ='redis'+'s'*CHANNEL_LAYER_SSL
+
+import ssl
+ssl_context = ssl.SSLContext()
+ssl_context.check_hostname=False
+
+
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': "channels_redis.core.RedisChannelLayer",
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": [{
+                'address': os.environ.get('REDIS_TLS_URL', 'redis://localhost:6379'),
+                'ssl': ssl_context
+            }],
+            'symmetric_encryption_keys': [SECRET_KEY],
+            "capacity": 600,
         },
     },
 }
@@ -186,9 +199,12 @@ CHANNEL_LAYERS = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        "LOCATION": [os.environ.get('REDIS_TLS_URL', 'rediss://localhost:6379')],
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": None
+            },
         }
     }
 }
